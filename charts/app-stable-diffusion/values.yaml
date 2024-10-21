@@ -1,0 +1,50 @@
+nameOverride: ""
+fullnameOverride: ""
+
+# Deployment
+deployment:
+  enabled: true
+  replicaCount: 1
+
+  args: []
+  env: {}
+
+  image:
+    repository: ubuntu
+    pullPolicy: IfNotPresent
+    tag: latest
+    imagePullSecrets: []
+
+  resources: {}
+
+  healthChecks:
+    endpoint: /health
+    enabled: false
+    delay: 300
+
+  podAnnotations: {}
+
+  nodeSelector: {}
+
+  tolerations: {}
+  # - key: platform.neuromation.io/job
+  #   operator: Exists
+  #   effect: NoSchedule
+  # - key: nvidia.com/gpu
+  #   operator: Exists
+  #   effect: NoSchedule
+
+  affinity: {}
+
+priorityClassName: ""
+
+# Service
+service:
+  port: 8000
+
+# Ingress
+ingress:
+  enabled: false
+  clusterName: ""
+
+preset_name: ""

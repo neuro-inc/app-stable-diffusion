@@ -1,1 +1,1 @@
-# app-stable-diffusion
+Stable Diffusion app deployed through Apolo
