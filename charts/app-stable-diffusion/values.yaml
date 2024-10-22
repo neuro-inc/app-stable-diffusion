@@ -10,9 +10,9 @@ deployment:
   env: {}
 
   image:
-    repository: ubuntu
+    repository: ghcr.io/neuro-inc/stable-diffusion-webui
     pullPolicy: IfNotPresent
-    tag: latest
+    tag: development
     imagePullSecrets: []
 
   resources: {}
@@ -40,7 +40,7 @@ priorityClassName: ""
 
 # Service
 service:
-  port: 8000
+  port: 7860
 
 # Ingress
 ingress:
@@ -48,3 +48,18 @@ ingress:
   clusterName: ""
 
 preset_name: ""
+
+
+# Model download hook
+modelDownload:
+  initEnabled: true
+  image:
+    repository: huggingface/downloader
+    tag: 0.17.3
+    pullPolicy: IfNotPresent
+  resources: {}
+
+HFCacheVolume:
+  enabled: true
+  storage: 20Gi
+  accessMode: ReadWriteOnce

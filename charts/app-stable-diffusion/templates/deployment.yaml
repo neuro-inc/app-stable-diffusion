@@ -29,6 +29,30 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.modelDownload.initEnabled }}
+      initContainers:
+        - name: download-model
+          image: "{{ .Values.modelDownload.image.repository }}:{{ .Values.modelDownload.image.tag }}"
+          volumeMounts:
+            {{- if .Values.HFCacheVolume.enabled }}
+            - name: huggingface-cache
+              mountPath: /root/.cache/huggingface
+            {{- end }}
+          env:
+          {{- range $k, $v := .Values.deployment.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
+          command: [ "huggingface-cli" ]
+          args:
+            - download
+            - --resume-download
+            - --repo-type=model
+            {{- if .Values.model.modelRevision }}
+            - --revision={{ .Values.model.modelRevision }}
+            {{- end }}
+            - "{{ .Values.model.modelHFName }}"
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
@@ -54,8 +78,14 @@ spec:
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
+            {{- if .Values.HFCacheVolume.enabled }}
+            - name: huggingface-cache
+              mountPath: /huggingface-cache
+            {{- end }}
           {{- if .Values.deployment.env }}
           env:
+            - name: HUGGINGFACE_HUB_CACHE
+              value: /huggingface-cache
           {{- range $k, $v := .Values.deployment.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
@@ -63,12 +93,18 @@ spec:
           {{- end }}
           {{- with .Values.deployment.args -}}
           args:
+             - --api --disable-safe-unpickle
           {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: dshm
           emptyDir:
             medium: Memory
+      {{- if .Values.HFCacheVolume.enabled }}
+        - name: huggingface-cache
+          persistentVolumeClaim:
+            claimName: {{ include "app.fullname" . }}-cache
+      {{- end }}
       {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
