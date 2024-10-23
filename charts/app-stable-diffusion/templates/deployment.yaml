@@ -2,14 +2,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app-stable-diffusion.fullname" . }}
+  name: {{ include "app.fullname" . }}
   labels:
-    {{- include "app-stable-diffusion.labels" . | nindent 4 }}
+    {{- include "app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
-      {{- include "app-stable-diffusion.selectorLabels" . | nindent 6 }}
+      {{- include "app.selectorLabels" . | nindent 6 }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -22,8 +22,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "app-stable-diffusion.labels" . | nindent 8 }}
-        {{- include "app-stable-diffusion.apoloPodLabels" . | nindent 8 }}
+        {{- include "app.labels" . | nindent 8 }}
+        {{- include "app.apoloPodLabels" . | nindent 8 }}
     spec:
       {{- with .Values.deployment.image.imagePullSecrets }}
       imagePullSecrets:
@@ -46,13 +46,13 @@ spec:
           command: [ "huggingface-cli" ]
           args:
             - download
-            - --resume-download
-            - --repo-type=model
-            {{- if .Values.model.modelRevision }}
-            - --revision={{ .Values.model.modelRevision }}
+            - {{ .Values.model.modelHFName }}
+            {{- if .Values.model.modelFile }}
+            - {{ .Values.model.modelFile }}
             {{- end }}
-            - "{{ .Values.model.modelHFName }}"
       {{- end }}
+      securityContext:
+        fsGroup: 0
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
@@ -80,12 +80,10 @@ spec:
               name: dshm
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: /huggingface-cache
+              mountPath: /home/worker/app/huggingface-cache
             {{- end }}
           {{- if .Values.deployment.env }}
           env:
-            - name: HUGGINGFACE_HUB_CACHE
-              value: /huggingface-cache
           {{- range $k, $v := .Values.deployment.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}

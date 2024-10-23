@@ -1,13 +1,38 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# Model
+model:
+  modelHFName: "stabilityai/stable-diffusion-2"
+  modelRevision: ""
+  modelFile: "768-v-ema.ckpt"
+
+ui:
+  # Set to false if you don't want to deploy the UI
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: ghcr.io/neuro-inc/stablestudio
+    pullPolicy: IfNotPresent
+    tag: development
+    imagePullSecrets: []
+  service:
+    port: 8080
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  podAnnotations: {}
+
 # Deployment
 deployment:
   enabled: true
   replicaCount: 1
 
   args: []
-  env: {}
+  env:
+    HUGGING_FACE_HUB_TOKEN: ""
+    COMMANDLINE_ARGS: "--skip-version-check --skip-torch-cuda-test --allow-code --enable-insecure-extension-access --api --opt-channelslast --no-half --lowvram"
+    HUGGINGFACE_HUB_CACHE: "/home/worker/app/huggingface-cache"
 
   image:
     repository: ghcr.io/neuro-inc/stable-diffusion-webui
@@ -41,6 +66,10 @@ priorityClassName: ""
 # Service
 service:
   port: 7860
+
+# UIService
+uiservice:
+  port: 3000
 
 # Ingress
 ingress:
