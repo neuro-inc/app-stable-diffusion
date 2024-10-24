@@ -47,8 +47,8 @@ spec:
           args:
             - download
             - {{ .Values.model.modelHFName }}
-            {{- if .Values.model.modelFile }}
-            - {{ .Values.model.modelFile }}
+            {{- if .Values.model.modelFiles }}
+            - {{ .Values.model.modelFiles }}
             {{- end }}
       {{- end }}
       securityContext:

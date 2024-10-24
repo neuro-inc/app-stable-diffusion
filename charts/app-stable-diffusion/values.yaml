@@ -5,7 +5,8 @@ fullnameOverride: ""
 model:
   modelHFName: "stabilityai/stable-diffusion-2"
   modelRevision: ""
-  modelFile: "768-v-ema.ckpt"
+  # space separated files
+  modelFiles: "768-v-ema.ckpt"
 
 ui:
   # Set to false if you don't want to deploy the UI
