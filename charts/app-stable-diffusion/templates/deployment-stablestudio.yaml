@@ -1,0 +1,79 @@
+{{- if .Values.deployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}-ss
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.stablestudio.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- with .Values.stablestudio.deployment.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+        {{- include "app.apoloPodLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.stablestudio.deployment.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.stablestudio.deployment.image.repository }}:{{ .Values.stablestudio.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.stablestudio.deployment.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.stablestudio.service.port }}
+              protocol: TCP
+          {{- if .Values.stablestudio.deployment.healthChecks.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.stablestudio.deployment.healthChecks.delay }}
+            httpGet:
+              path: {{ .Values.stablestudio.deployment.healthChecks.endpoint }}
+              port: http
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.stablestudio.deployment.healthChecks.delay }}
+            httpGet:
+              path: {{ .Values.stablestudio.deployment.healthChecks.endpoint }}
+              port: http
+          {{- end }}
+          resources:
+            {{- toYaml .Values.stablestudio.deployment.resources | nindent 12 }}
+          {{- if .Values.stablestudio.deployment.env }}
+          env:
+          {{- range $k, $v := .Values.stablestudio.deployment.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.stablestudio.deployment.args -}}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.stablestudio.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stablestudio.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stablestudio.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+{{- end }}

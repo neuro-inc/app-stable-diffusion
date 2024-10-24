@@ -10,6 +10,46 @@ model:
   modelFiles: ""
 
 
+# StableStudio
+stablestudio:
+  # Deployment
+  deployment:
+    enabled: true
+    replicaCount: 1
+
+    args: [ ]
+
+    image:
+      repository: ghcr.io/neuro-inc/stablestudio
+      pullPolicy: IfNotPresent
+      tag: development
+      imagePullSecrets: [ ]
+
+    resources: { }
+
+    healthChecks:
+      endpoint: /health
+      enabled: false
+      delay: 300
+
+    podAnnotations: { }
+
+    nodeSelector: { }
+
+    tolerations: { }
+    # - key: platform.neuromation.io/job
+    #   operator: Exists
+    #   effect: NoSchedule
+    # - key: nvidia.com/gpu
+    #   operator: Exists
+    #   effect: NoSchedule
+
+    affinity: { }
+  # Service
+  service:
+    port: 3000
+
+
 # Deployment
 deployment:
   enabled: true
