@@ -1,0 +1,17 @@
+{{- if .Values.HFCacheVolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "app.fullname" . }}-cache
+  labels:
+    {{- include "app.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.HFCacheVolume.accessMode }}
+  {{- if .Values.HFCacheVolume.storageClassName }}
+  storageClassName: {{ .Values.HFCacheVolume.storageClassName }}
+  {{- end}}
+  resources:
+    requests:
+      storage: {{ .Values.HFCacheVolume.storage }}
+{{- end }}
