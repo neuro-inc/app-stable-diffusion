@@ -9,7 +9,7 @@ spec:
   replicas: {{ .Values.stablestudio.deployment.replicaCount }}
   selector:
     matchLabels:
-      {{- include "app.selectorLabels" . | nindent 6 }}
+      {{- include "stablestudio.selectorLabels" . | nindent 6 }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -22,7 +22,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "app.labels" . | nindent 8 }}
+        {{- include "stablestudio.labels" . | nindent 8 }}
         {{- include "app.apoloPodLabels" . | nindent 8 }}
     spec:
       {{- with .Values.stablestudio.deployment.image.imagePullSecrets }}

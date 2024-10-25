@@ -52,6 +52,28 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Common labels
+*/}}
+{{- define "stablestudio.labels" -}}
+application: stable-diffusion-ss
+helm.sh/chart: {{ include "app.chart" . }}
+{{ include "stablestudio.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+StableStudio Selector labels
+*/}}
+{{- define "stablestudio.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "app.name" . }}-ss
+app.kubernetes.io/instance: {{ .Release.Name }}-ss
+{{- end }}
+
+
+{{/*
 Pod-specific labels
 */}}
 {{- define "app.apoloPodLabels" -}}
