@@ -39,7 +39,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ "app.fullname" }}
+                name: {{ include "app.fullname" $ }}
                 port:
                   number: {{ $svcPort }}
           {{- end }}
