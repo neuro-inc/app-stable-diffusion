@@ -80,3 +80,11 @@ Pod-specific labels
 platform.apolo.us/preset: {{ .Values.preset_name }}
 platform.apolo.us/component: app
 {{- end }}
+
+{{/*
+Pod-specific labels
+*/}}
+{{- define "stablestudio.apoloPodLabels" -}}
+platform.apolo.us/preset: {{ .Values.preset_name }}
+platform.apolo.us/component: app-ss
+{{- end }}

@@ -23,7 +23,7 @@ spec:
       {{- end }}
       labels:
         {{- include "stablestudio.labels" . | nindent 8 }}
-        {{- include "app.apoloPodLabels" . | nindent 8 }}
+        {{- include "stablestudio.apoloPodLabels" . | nindent 8 }}
     spec:
       {{- with .Values.stablestudio.deployment.image.imagePullSecrets }}
       imagePullSecrets:

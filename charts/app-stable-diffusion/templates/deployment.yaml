@@ -36,7 +36,7 @@ spec:
           volumeMounts:
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: /root/.cache/huggingface
+              mountPath: /home/worker/app/huggingface-cache
             {{- end }}
           env:
           {{- range $k, $v := .Values.deployment.env }}
@@ -47,6 +47,7 @@ spec:
           args:
             - download
             - {{ .Values.model.modelHFName }}
+            - --local-dir /home/worker/app/huggingface-cache/
             {{- if .Values.model.modelFiles }}
             - {{ .Values.model.modelFiles }}
             {{- end }}
