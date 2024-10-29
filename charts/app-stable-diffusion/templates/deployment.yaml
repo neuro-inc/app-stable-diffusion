@@ -1,4 +1,4 @@
-{{- if .Values.deployment.enabled }}
+{{- if .Values.api.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.deployment.replicaCount }}
+  replicas: {{ .Values.api.replicaCount }}
   selector:
     matchLabels:
       {{- include "app.selectorLabels" . | nindent 6 }}
@@ -17,7 +17,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.deployment.podAnnotations }}
+      {{- with .Values.api.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -25,7 +25,7 @@ spec:
         {{- include "app.labels" . | nindent 8 }}
         {{- include "app.apoloPodLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.deployment.image.imagePullSecrets }}
+      {{- with .Values.api.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -39,7 +39,7 @@ spec:
               mountPath: /home/worker/app/huggingface-cache
             {{- end }}
           env:
-          {{- range $k, $v := .Values.deployment.env }}
+          {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
           {{- end }}
@@ -56,26 +56,24 @@ spec:
         fsGroup: 0
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
-          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.deployment.healthChecks.enabled }}
           livenessProbe:
-            initialDelaySeconds: {{ .Values.deployment.healthChecks.delay }}
+            initialDelaySeconds: 300
             httpGet:
-              path: {{ .Values.deployment.healthChecks.endpoint }}
+              path: /health
               port: http
           readinessProbe:
-            initialDelaySeconds: {{ .Values.deployment.healthChecks.delay }}
+            initialDelaySeconds: 300
             httpGet:
-              path: {{ .Values.deployment.healthChecks.endpoint }}
+              path: /health
               port: http
-          {{- end }}
           resources:
-            {{- toYaml .Values.deployment.resources | nindent 12 }}
+            {{- toYaml .Values.api.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
@@ -83,16 +81,14 @@ spec:
             - name: huggingface-cache
               mountPath: /home/worker/app/huggingface-cache
             {{- end }}
-          {{- if .Values.deployment.env }}
+          {{- if .Values.api.env }}
           env:
-          {{- range $k, $v := .Values.deployment.env }}
+          {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
           {{- end }}
           {{- end }}
-          {{- with .Values.deployment.args -}}
-          args:
-             - --api --disable-safe-unpickle
+          {{- with .Values.api.args -}}
           {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
@@ -104,15 +100,15 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "app.fullname" . }}-cache
       {{- end }}
-      {{- with .Values.deployment.nodeSelector }}
+      {{- with .Values.api.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.deployment.affinity }}
+      {{- with .Values.api.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.deployment.tolerations }}
+      {{- with .Values.api.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

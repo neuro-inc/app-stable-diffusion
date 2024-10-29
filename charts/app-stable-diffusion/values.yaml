@@ -1,57 +1,54 @@
 nameOverride: ""
 fullnameOverride: ""
 
-# Model
-model:
-  # HF model name for example 768-v-ema.ckpt
-  modelHFName: ""
-  modelRevision: ""
-  # space separated files for example 768-v-ema.ckpt
-  modelFiles: ""
-
-
 # StableStudio
 stablestudio:
-  # Deployment
-  deployment:
-    enabled: true
-    replicaCount: 1
+  enabled: false
+  preset_name: ""
+  replicaCount: 1
 
-    args: [ ]
+  args: [ ]
 
-    image:
-      repository: ghcr.io/neuro-inc/stablestudio
-      pullPolicy: IfNotPresent
-      tag: development
-      imagePullSecrets: [ ]
+  image:
+    repository: ghcr.io/neuro-inc/stablestudio
+    pullPolicy: IfNotPresent
+    tag: development
+    imagePullSecrets: [ ]
 
-    resources: { }
+  resources: { }
+  podAnnotations: { }
+  nodeSelector: { }
+  tolerations: { }
+  # - key: platform.neuromation.io/job
+  #   operator: Exists
+  #   effect: NoSchedule
+  # - key: nvidia.com/gpu
+  #   operator: Exists
+  #   effect: NoSchedule
 
-    healthChecks:
-      endpoint: /health
-      enabled: false
-      delay: 300
-
-    podAnnotations: { }
-
-    nodeSelector: { }
-
-    tolerations: { }
-    # - key: platform.neuromation.io/job
-    #   operator: Exists
-    #   effect: NoSchedule
-    # - key: nvidia.com/gpu
-    #   operator: Exists
-    #   effect: NoSchedule
-
-    affinity: { }
+  affinity: { }
   # Service
   service:
     port: 3000
+  # Ingress
+  ingress:
+    clusterName: ""
+    className: ""
+    annotations: { }
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    # nginx.ingress.kubernetes.io/proxy-body-size: 15m
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: sd-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
 
-
-# Deployment
-deployment:
+# Api component
+api:
   enabled: true
   replicaCount: 1
 
@@ -69,11 +66,6 @@ deployment:
 
   resources: {}
 
-  healthChecks:
-    endpoint: /health
-    enabled: false
-    delay: 300
-
   podAnnotations: {}
 
   nodeSelector: {}
@@ -87,37 +79,37 @@ deployment:
   #   effect: NoSchedule
 
   affinity: {}
+  preset_name: ""
+  # Service
+  service:
+    port: 7860
+  # Ingress
+  ingress:
+    enabled: false
+    clusterName: ""
+    className: ""
+    annotations: { }
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+      # nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    # nginx.ingress.kubernetes.io/proxy-body-size: 15m
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: sd-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
 
 priorityClassName: ""
 
-# Service
-service:
-  port: 7860
-
-# UIService
-uiservice:
-  port: 3000
-
-# Ingress
-ingress:
-  enabled: false
-  clusterName: ""
-  className: ""
-  annotations: { }
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    # nginx.ingress.kubernetes.io/backend-protocol: HTTP
-  # nginx.ingress.kubernetes.io/proxy-body-size: 15m
-  # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  hosts:
-    - host: sd-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-
-preset_name: ""
-
+# Model
+model:
+  # HF model name for example 768-v-ema.ckpt
+  modelHFName: ""
+  modelRevision: ""
+  # space separated files for example 768-v-ema.ckpt
+  modelFiles: ""
 
 # Model download hook
 modelDownload:

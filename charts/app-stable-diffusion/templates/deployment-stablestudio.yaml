@@ -1,10 +1,10 @@
-{{- if .Values.deployment.enabled }}
+{{- if .Values.stablestudio.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.fullname" . }}-ss
+  name: {{ include "stablestudio.fullname" . }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "stablestudio.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stablestudio.deployment.replicaCount }}
   selector:
@@ -17,7 +17,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.stablestudio.deployment.podAnnotations }}
+      {{- with .Values.stablestudio.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -25,51 +25,49 @@ spec:
         {{- include "stablestudio.labels" . | nindent 8 }}
         {{- include "stablestudio.apoloPodLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.stablestudio.deployment.image.imagePullSecrets }}
+      {{- with .Values.stablestudio.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.stablestudio.deployment.image.repository }}:{{ .Values.stablestudio.deployment.image.tag }}"
-          imagePullPolicy: {{ .Values.stablestudio.deployment.image.pullPolicy }}
+          image: "{{ .Values.stablestudio.image.repository }}:{{ .Values.stablestudio.image.tag }}"
+          imagePullPolicy: {{ .Values.stablestudio.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.stablestudio.service.port }}
               protocol: TCP
-          {{- if .Values.stablestudio.deployment.healthChecks.enabled }}
           livenessProbe:
-            initialDelaySeconds: {{ .Values.stablestudio.deployment.healthChecks.delay }}
+            initialDelaySeconds: 100
             httpGet:
-              path: {{ .Values.stablestudio.deployment.healthChecks.endpoint }}
+              path: /health
               port: http
           readinessProbe:
-            initialDelaySeconds: {{ .Values.stablestudio.deployment.healthChecks.delay }}
+            initialDelaySeconds: 100
             httpGet:
-              path: {{ .Values.stablestudio.deployment.healthChecks.endpoint }}
+              path: /health
               port: http
-          {{- end }}
           resources:
-            {{- toYaml .Values.stablestudio.deployment.resources | nindent 12 }}
-          {{- if .Values.stablestudio.deployment.env }}
+            {{- toYaml .Values.stablestudio.resources | nindent 12 }}
+          {{- if .Values.stablestudio.env }}
           env:
-          {{- range $k, $v := .Values.stablestudio.deployment.env }}
+          {{- range $k, $v := .Values.stablestudio.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
           {{- end }}
           {{- end }}
-          {{- with .Values.stablestudio.deployment.args -}}
+          {{- with .Values.stablestudio.args -}}
           {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.stablestudio.deployment.nodeSelector }}
+      {{- with .Values.stablestudio.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stablestudio.deployment.affinity }}
+      {{- with .Values.stablestudio.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stablestudio.deployment.tolerations }}
+      {{- with .Values.stablestudio.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
