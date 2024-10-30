@@ -1,8 +1,8 @@
-{{- if .Values.ingress.enabled -}}
-{{- $svcPort := .Values.api.service.port -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+---
+{{- if .Values.api.ingress.enabled -}}
+{{- if and .Values.api.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.api.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.api.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- $_ := set .Values.api.ingress.annotations "kubernetes.io/ingress.class" .Values.api.ingress.className}}
   {{- end }}
 {{- end }}
 apiVersion: networking.k8s.io/v1
@@ -11,17 +11,17 @@ metadata:
   name: {{ include "app.fullname" . }}
   labels:
     {{- include "app.labels" $ | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.api.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.api.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.api.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.api.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.api.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -30,7 +30,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
+    {{- range .Values.api.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -41,18 +41,19 @@ spec:
               service:
                 name: {{ include "app.fullname" $ }}
                 port:
-                  number: {{ $svcPort }}
+                  name: http
           {{- end }}
     {{- end }}
 {{- end }}
-
+---
+# Ingress for StableStudio
 {{- if .Values.stablestudio.enabled -}}
-{{- $ssPort := .Values.stablestudio.service.port -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+{{- if and .Values.stablestudio.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.stablestudio.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.stablestudio.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- $_ := set .Values.stablestudio.ingress.annotations "kubernetes.io/ingress.class" .Values.stablestudio.ingress.className}}
   {{- end }}
 {{- end }}
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -64,8 +65,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.stablestudio.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.stablestudio.ingress.className }}
   {{- end }}
   {{- if .Values.stablestudio.ingress.tls }}
   tls:
@@ -89,7 +90,7 @@ spec:
               service:
                 name: {{ include "stablestudio.fullname" $ }}
                 port:
-                  number: {{ $ssPort }}
+                  name: http
           {{- end }}
     {{- end }}
 {{- end }}
