@@ -15,18 +15,14 @@ stablestudio:
     tag: development
     imagePullSecrets: [ ]
 
-  resources: { }
-  podAnnotations: { }
-  nodeSelector: { }
-  tolerations: { }
-  # - key: platform.neuromation.io/job
-  #   operator: Exists
-  #   effect: NoSchedule
-  # - key: nvidia.com/gpu
-  #   operator: Exists
-  #   effect: NoSchedule
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  labels: {}
 
-  affinity: { }
+  podAnnotations: { }
+
   # Service
   service:
     port: 3000
@@ -64,21 +60,20 @@ api:
     tag: development
     imagePullSecrets: []
 
-  resources: {}
 
   podAnnotations: {}
 
+  resources: {}
   nodeSelector: {}
-
-  tolerations: {}
+  affinity: {}
+  tolerations: []
+  labels: {}
   # - key: platform.neuromation.io/job
   #   operator: Exists
   #   effect: NoSchedule
   # - key: nvidia.com/gpu
   #   operator: Exists
   #   effect: NoSchedule
-
-  affinity: {}
   preset_name: ""
   # Service
   service:
