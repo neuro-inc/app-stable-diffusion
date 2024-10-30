@@ -1,4 +1,5 @@
 {{- if .Values.api.enabled }}
+{{- $huggingfaceDir := "/home/worker/app/huggingface-cache" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,21 +37,17 @@ spec:
           volumeMounts:
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: /home/worker/app/huggingface-cache
+              mountPath: {{ $huggingfaceDir }}
             {{- end }}
           env:
           {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
           {{- end }}
-          command: [ "huggingface-cli" ]
+          command: [ "/bin/sh", "-c" ]
           args:
-            - download
-            - {{ .Values.model.modelHFName }}
-            - --local-dir /home/worker/app/huggingface-cache/
-            {{- if .Values.model.modelFiles }}
-            - {{ .Values.model.modelFiles }}
-            {{- end }}
+{{/*            huggingface Docker was not updated for a long time so it could not recognize the dir param */}}
+            - "pip install -U 'huggingface_hub[cli]' && huggingface-cli download {{ .Values.model.modelHFName }} {{ if .Values.model.modelFiles }} {{ .Values.model.modelFiles }} {{ end }} --local-dir /home/worker/app/huggingface-cache/"
       {{- end }}
       securityContext:
         fsGroup: 0
@@ -60,17 +57,17 @@ spec:
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.api.service.port }}
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 300
+            initialDelaySeconds: 60
             httpGet:
-              path: /health
+              path: /sdapi/v1/options
               port: http
           readinessProbe:
-            initialDelaySeconds: 300
+            initialDelaySeconds: 60
             httpGet:
-              path: /health
+              path: /sdapi/v1/options
               port: http
           resources:
             {{- toYaml .Values.api.resources | nindent 12 }}
@@ -79,13 +76,18 @@ spec:
               name: dshm
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: /home/worker/app/huggingface-cache
+              mountPath: {{ $huggingfaceDir }}
             {{- end }}
           {{- if .Values.api.env }}
           env:
           {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
-              value: {{ $v | quote }}
+              value: |
+                {{- if eq $k "COMMANDLINE_ARGS" }}
+                  {{ printf "%s --ckpt-dir %s" $v $huggingfaceDir }}
+                {{- else }}
+                  {{ $v | quote }}
+                {{- end }}
           {{- end }}
           {{- end }}
           {{- with .Values.api.args -}}

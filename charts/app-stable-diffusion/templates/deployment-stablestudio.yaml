@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "stablestudio.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.stablestudio.deployment.replicaCount }}
+  replicas: {{ .Values.stablestudio.replicaCount }}
   selector:
     matchLabels:
       {{- include "stablestudio.selectorLabels" . | nindent 6 }}
@@ -38,14 +38,14 @@ spec:
               containerPort: {{ .Values.stablestudio.service.port }}
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 100
+            initialDelaySeconds: 50
             httpGet:
-              path: /health
+              path: /
               port: http
           readinessProbe:
-            initialDelaySeconds: 100
+            initialDelaySeconds: 50
             httpGet:
-              path: /health
+              path: /
               port: http
           resources:
             {{- toYaml .Values.stablestudio.resources | nindent 12 }}
