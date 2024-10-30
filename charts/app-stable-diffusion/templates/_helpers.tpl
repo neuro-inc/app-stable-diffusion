@@ -42,7 +42,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
-
 {{/*
 Selector labels
 */}}
@@ -51,10 +50,68 @@ app.kubernetes.io/name: {{ include "app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+
+{{/*
+Expand the name of the chart.
+*/}}
+{{- define "stablestudio.name" -}}
+{{- $baseName := default .Values.nameOverride .Chart.Name }}
+{{- printf "%s-ss" ($baseName | trunc 63 | trimSuffix "-") }}
+{{- end }}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "stablestudio.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s-ss" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+Common labels
+*/}}
+{{- define "stablestudio.labels" -}}
+application: stable-diffusion-ss
+helm.sh/chart: {{ include "app.chart" . }}
+{{ include "stablestudio.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+StableStudio Selector labels
+*/}}
+{{- define "stablestudio.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "app.name" . }}-ss
+app.kubernetes.io/instance: {{ .Release.Name }}-ss
+{{- end }}
+
+
 {{/*
 Pod-specific labels
 */}}
 {{- define "app.apoloPodLabels" -}}
-platform.apolo.us/preset: {{ .Values.preset_name }}
+platform.apolo.us/preset: {{ .Values.api.preset_name }}
 platform.apolo.us/component: app
+{{- end }}
+
+{{/*
+Pod-specific labels
+*/}}
+{{- define "stablestudio.apoloPodLabels" -}}
+platform.apolo.us/preset: {{ .Values.stablestudio.preset_name }}
+platform.apolo.us/component: app-ss
 {{- end }}

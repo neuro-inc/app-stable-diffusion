@@ -1,4 +1,5 @@
-{{- if .Values.deployment.enabled }}
+{{- if .Values.api.enabled }}
+{{- $huggingfaceDir := "/home/worker/app/huggingface-cache" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +7,7 @@ metadata:
   labels:
     {{- include "app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.deployment.replicaCount }}
+  replicas: {{ .Values.api.replicaCount }}
   selector:
     matchLabels:
       {{- include "app.selectorLabels" . | nindent 6 }}
@@ -17,7 +18,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.deployment.podAnnotations }}
+      {{- with .Values.api.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -25,7 +26,7 @@ spec:
         {{- include "app.labels" . | nindent 8 }}
         {{- include "app.apoloPodLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.deployment.image.imagePullSecrets }}
+      {{- with .Values.api.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -36,63 +37,69 @@ spec:
           volumeMounts:
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: /root/.cache/huggingface
+              mountPath: {{ $huggingfaceDir }}
             {{- end }}
           env:
-          {{- range $k, $v := .Values.deployment.env }}
+          {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
           {{- end }}
-          command: [ "huggingface-cli" ]
+          command: [ "/bin/sh", "-c" ]
           args:
-            - download
-            - {{ .Values.model.modelHFName }}
+            - "pip"
+            - "install"
+            - "-U"
+            - "huggingface_hub[cli]==0.26.0"
+            - "&&"
+            - "huggingface-cli"
+            - "download"
+            - "{{ .Values.model.modelHFName }}"
             {{- if .Values.model.modelFiles }}
-            - {{ .Values.model.modelFiles }}
+            - "{{ .Values.model.modelFiles }}"
             {{- end }}
+            - "--local-dir"
+            - {{ $huggingfaceDir }}
       {{- end }}
       securityContext:
         fsGroup: 0
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
-          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.api.service.port }}
               protocol: TCP
-          {{- if .Values.deployment.healthChecks.enabled }}
           livenessProbe:
-            initialDelaySeconds: {{ .Values.deployment.healthChecks.delay }}
+            initialDelaySeconds: 60
             httpGet:
-              path: {{ .Values.deployment.healthChecks.endpoint }}
+              path: /sdapi/v1/options
               port: http
           readinessProbe:
-            initialDelaySeconds: {{ .Values.deployment.healthChecks.delay }}
+            initialDelaySeconds: 60
             httpGet:
-              path: {{ .Values.deployment.healthChecks.endpoint }}
+              path: /sdapi/v1/options
               port: http
-          {{- end }}
           resources:
-            {{- toYaml .Values.deployment.resources | nindent 12 }}
+            {{- toYaml .Values.api.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: /home/worker/app/huggingface-cache
+              mountPath: {{ $huggingfaceDir }}
             {{- end }}
-          {{- if .Values.deployment.env }}
+          {{- if .Values.api.env }}
           env:
-          {{- range $k, $v := .Values.deployment.env }}
+          {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
-              value: {{ $v | quote }}
+              value: |
+                {{- if eq $k "COMMANDLINE_ARGS" }}
+                  {{ printf "%s --ckpt-dir %s" $v $huggingfaceDir }}
+                {{- else }}
+                  {{ $v | quote }}
+                {{- end }}
           {{- end }}
-          {{- end }}
-          {{- with .Values.deployment.args -}}
-          args:
-             - --api --disable-safe-unpickle
-          {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: dshm
@@ -103,15 +110,15 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "app.fullname" . }}-cache
       {{- end }}
-      {{- with .Values.deployment.nodeSelector }}
+      {{- with .Values.api.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.deployment.affinity }}
+      {{- with .Values.api.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.deployment.tolerations }}
+      {{- with .Values.api.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

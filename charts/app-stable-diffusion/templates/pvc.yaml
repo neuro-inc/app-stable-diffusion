@@ -5,6 +5,8 @@ metadata:
   name: {{ include "app.fullname" . }}-cache
   labels:
     {{- include "app.labels" $ | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": keep
 spec:
   accessModes:
     - {{ .Values.HFCacheVolume.accessMode }}
