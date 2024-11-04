@@ -12,7 +12,7 @@ stablestudio:
   image:
     repository: ghcr.io/neuro-inc/stablestudio
     pullPolicy: IfNotPresent
-    tag: development
+    tag: latest
     imagePullSecrets: [ ]
 
   resources: {}
@@ -57,7 +57,7 @@ api:
   image:
     repository: ghcr.io/neuro-inc/stable-diffusion-webui
     pullPolicy: IfNotPresent
-    tag: development
+    tag: latest
     imagePullSecrets: []
 
 
