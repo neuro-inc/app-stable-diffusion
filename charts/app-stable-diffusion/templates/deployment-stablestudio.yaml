@@ -37,16 +37,16 @@ spec:
             - name: http
               containerPort: {{ .Values.stablestudio.service.port }}
               protocol: TCP
-{{/*          livenessProbe:*/}}
-{{/*            initialDelaySeconds: 50*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /*/}}
-{{/*              port: http*/}}
-{{/*          readinessProbe:*/}}
-{{/*            initialDelaySeconds: 50*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /*/}}
-{{/*              port: http*/}}
+          livenessProbe:
+            initialDelaySeconds: 50
+            httpGet:
+              path: /settings
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 50
+            httpGet:
+              path: /settings
+              port: http
           resources:
             {{- toYaml .Values.stablestudio.resources | nindent 12 }}
           {{- if .Values.stablestudio.env }}

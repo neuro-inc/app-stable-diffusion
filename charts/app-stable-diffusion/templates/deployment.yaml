@@ -48,8 +48,6 @@ spec:
           args:
             - "pip install -U 'huggingface_hub[cli]'==0.26.0 && huggingface-cli download {{ .Values.model.modelHFName }} {{ if .Values.model.modelFiles }} {{ .Values.model.modelFiles }} {{ end }} --local-dir /home/worker/app/huggingface-cache/"
       {{- end }}
-      securityContext:
-        fsGroup: 0
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
