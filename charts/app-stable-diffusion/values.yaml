@@ -117,5 +117,5 @@ modelDownload:
 
 HFCacheVolume:
   enabled: true
-  storage: 20Gi
+  storage: 40Gi
   accessMode: ReadWriteOnce
