@@ -42,7 +42,11 @@ spec:
           env:
           {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
+              {{- if kindIs "string" $v }}
               value: {{ $v | quote }}
+              {{- else }}
+              {{ $v | toYaml | nindent 14 }}
+              {{- end }}
           {{- end }}
           command: [ "/bin/sh", "-c" ]
           args:
@@ -79,12 +83,17 @@ spec:
           env:
           {{- range $k, $v := .Values.api.env }}
             - name: {{ $k }}
+              {{- if kindIs "string" $v }}
               value: |
                 {{- if eq $k "COMMANDLINE_ARGS" }}
                   {{ printf "%s --ckpt-dir %s" $v $huggingfaceDir }}
                 {{- else }}
                   {{ $v | quote }}
                 {{- end }}
+              {{- else }}
+              {{ $v | toYaml | nindent 14 }}
+              {{- end }}
+
           {{- end }}
           {{- end }}
       volumes:
