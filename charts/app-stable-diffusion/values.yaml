@@ -1,48 +1,6 @@
 nameOverride: ""
 fullnameOverride: ""
 
-# StableStudio
-stablestudio:
-  enabled: false
-  preset_name: ""
-  replicaCount: 1
-
-  args: [ ]
-
-  image:
-    repository: ghcr.io/neuro-inc/stablestudio
-    pullPolicy: IfNotPresent
-    tag: latest
-    imagePullSecrets: [ ]
-
-  resources: {}
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-  labels: {}
-
-  podAnnotations: { }
-
-  # Service
-  service:
-    port: 3000
-  # Ingress
-  ingress:
-    clusterName: ""
-    className: ""
-    annotations: { }
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-      # nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    # nginx.ingress.kubernetes.io/proxy-body-size: 15m
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    hosts:
-      - host: sd-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
-
 # Api component
 api:
   enabled: true
@@ -52,10 +10,10 @@ api:
   env:
     HUGGING_FACE_HUB_TOKEN: ""
     COMMANDLINE_ARGS: ""
-    HUGGINGFACE_HUB_CACHE: "/home/worker/app/huggingface-cache"
+    HUGGINGFACE_HUB_CACHE: "/mnt/models/Diffusers/"
 
   image:
-    repository: ghcr.io/neuro-inc/stable-diffusion-webui
+    repository: vladmandic/sdnext-cuda:latest
     pullPolicy: IfNotPresent
     tag: latest
     imagePullSecrets: []
