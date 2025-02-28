@@ -1,5 +1,5 @@
 {{- if .Values.api.enabled }}
-{{- $huggingfaceDir := "/home/worker/app/huggingface-cache" -}}
+{{- $huggingfaceDir := "/mnt/models/Diffusers" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,7 +50,7 @@ spec:
           {{- end }}
           command: [ "/bin/sh", "-c" ]
           args:
-            - "pip install -U 'huggingface_hub[cli]'==0.26.0 && huggingface-cli download {{ .Values.model.modelHFName }} {{ if .Values.model.modelFiles }} {{ .Values.model.modelFiles }} {{ end }} --local-dir /home/worker/app/huggingface-cache/"
+            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --local-dir /mnt/models/Diffusers/ --repo-type model"
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
