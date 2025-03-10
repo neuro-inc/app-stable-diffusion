@@ -13,7 +13,7 @@ api:
     HUGGINGFACE_HUB_CACHE: "/mnt/models/Diffusers/"
 
   image:
-    repository: vladmandic/sdnext-cuda:latest
+    repository: vladmandic/sdnext-cuda
     pullPolicy: IfNotPresent
     tag: latest
     imagePullSecrets: []
