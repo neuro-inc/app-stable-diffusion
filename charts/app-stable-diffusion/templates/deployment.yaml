@@ -1,5 +1,4 @@
 {{- if .Values.api.enabled }}
-{{- $huggingfaceDir := "/home/worker/app/huggingface-cache" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,7 +36,7 @@ spec:
           volumeMounts:
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: {{ $huggingfaceDir }}
+              mountPath: {{ .Values.DIFFUSERS_CACHE }}
             {{- end }}
           env:
           {{- range $k, $v := .Values.api.env }}
@@ -50,7 +49,7 @@ spec:
           {{- end }}
           command: [ "/bin/sh", "-c" ]
           args:
-            - "pip install -U 'huggingface_hub[cli]'==0.26.0 && huggingface-cli download {{ .Values.model.modelHFName }} {{ if .Values.model.modelFiles }} {{ .Values.model.modelFiles }} {{ end }} --local-dir /home/worker/app/huggingface-cache/"
+            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --cache-dir {{.Values.DIFFUSERS_CACHE}}"
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -77,7 +76,7 @@ spec:
               name: dshm
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: {{ $huggingfaceDir }}
+              mountPath: {{ .Values.DIFFUSERS_CACHE }}
             {{- end }}
           {{- if .Values.api.env }}
           env:
@@ -85,15 +84,10 @@ spec:
             - name: {{ $k }}
               {{- if kindIs "string" $v }}
               value: |
-                {{- if eq $k "COMMANDLINE_ARGS" }}
-                  {{ printf "%s --ckpt-dir %s" $v $huggingfaceDir }}
-                {{- else }}
-                  {{ $v | quote }}
-                {{- end }}
+                {{ $v | quote }}
               {{- else }}
               {{ $v | toYaml | nindent 14 }}
               {{- end }}
-
           {{- end }}
           {{- end }}
       volumes:
