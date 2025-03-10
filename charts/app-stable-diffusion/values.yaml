@@ -10,7 +10,7 @@ api:
   env:
     HUGGING_FACE_HUB_TOKEN: ""
     COMMANDLINE_ARGS: ""
-    HUGGINGFACE_HUB_CACHE: "/mnt/models/Diffusers/"
+#    HUGGINGFACE_HUB_CACHE: "/mnt/models/Diffusers/"
 
   image:
     repository: vladmandic/sdnext-cuda

@@ -29,28 +29,28 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.modelDownload.initEnabled }}
-      initContainers:
-        - name: download-model
-          image: "{{ .Values.modelDownload.image.repository }}:{{ .Values.modelDownload.image.tag }}"
-          volumeMounts:
-            {{- if .Values.HFCacheVolume.enabled }}
-            - name: huggingface-cache
-              mountPath: {{ .Values.api.env.HUGGINGFACE_HUB_CACHE }}
-            {{- end }}
-          env:
-          {{- range $k, $v := .Values.api.env }}
-            - name: {{ $k }}
-              {{- if kindIs "string" $v }}
-              value: {{ $v | quote }}
-              {{- else }}
-              {{ $v | toYaml | nindent 14 }}
-              {{- end }}
-          {{- end }}
-          command: [ "/bin/sh", "-c" ]
-          args:
-            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --local-dir /mnt/models/Diffusers/ --repo-type model"
-      {{- end }}
+{{/*      {{- if .Values.modelDownload.initEnabled }}*/}}
+{{/*      initContainers:*/}}
+{{/*        - name: download-model*/}}
+{{/*          image: "{{ .Values.modelDownload.image.repository }}:{{ .Values.modelDownload.image.tag }}"*/}}
+{{/*          volumeMounts:*/}}
+{{/*            {{- if .Values.HFCacheVolume.enabled }}*/}}
+{{/*            - name: huggingface-cache*/}}
+{{/*              mountPath: {{ .Values.api.env.HUGGINGFACE_HUB_CACHE }}*/}}
+{{/*            {{- end }}*/}}
+{{/*          env:*/}}
+{{/*          {{- range $k, $v := .Values.api.env }}*/}}
+{{/*            - name: {{ $k }}*/}}
+{{/*              {{- if kindIs "string" $v }}*/}}
+{{/*              value: {{ $v | quote }}*/}}
+{{/*              {{- else }}*/}}
+{{/*              {{ $v | toYaml | nindent 14 }}*/}}
+{{/*              {{- end }}*/}}
+{{/*          {{- end }}*/}}
+{{/*          command: [ "/bin/sh", "-c" ]*/}}
+{{/*          args:*/}}
+{{/*            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --local-dir /mnt/models/Diffusers/ --repo-type model"*/}}
+{{/*      {{- end }}*/}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
@@ -74,10 +74,10 @@ spec:
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
-            {{- if .Values.HFCacheVolume.enabled }}
-            - name: huggingface-cache
-              mountPath: {{ .Values.api.env.HUGGINGFACE_HUB_CACHE }}
-            {{- end }}
+{{/*            {{- if .Values.HFCacheVolume.enabled }}*/}}
+{{/*            - name: huggingface-cache*/}}
+{{/*              mountPath: {{ .Values.api.env.HUGGINGFACE_HUB_CACHE }}*/}}
+{{/*            {{- end }}*/}}
           {{- if .Values.api.env }}
           env:
           {{- range $k, $v := .Values.api.env }}
