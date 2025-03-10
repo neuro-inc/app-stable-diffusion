@@ -78,4 +78,4 @@ HFCacheVolume:
   storage: 100Gi
   accessMode: ReadWriteOnce
 
-HUGGINGFACE_HUB_CACHE: "/mnt/models/Diffusers/"
+DIFFUSERS_CACHE: "/mnt/models/Diffusers/"

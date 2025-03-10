@@ -36,7 +36,7 @@ spec:
           volumeMounts:
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: {{ .Values.HUGGINGFACE_HUB_CACHE }}
+              mountPath: {{ .Values.DIFFUSERS_CACHE }}
             {{- end }}
           env:
           {{- range $k, $v := .Values.api.env }}
@@ -49,7 +49,7 @@ spec:
           {{- end }}
           command: [ "/bin/sh", "-c" ]
           args:
-            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --cache-dir {{.Values.HUGGINGFACE_HUB_CACHE}}"
+            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --cache-dir {{.Values.DIFFUSERS_CACHE}}"
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -76,7 +76,7 @@ spec:
               name: dshm
             {{- if .Values.HFCacheVolume.enabled }}
             - name: huggingface-cache
-              mountPath: {{ .Values.HUGGINGFACE_HUB_CACHE }}
+              mountPath: {{ .Values.DIFFUSERS_CACHE }}
             {{- end }}
           {{- if .Values.api.env }}
           env:
@@ -88,7 +88,6 @@ spec:
               {{- else }}
               {{ $v | toYaml | nindent 14 }}
               {{- end }}
-
           {{- end }}
           {{- end }}
       volumes:
