@@ -84,7 +84,11 @@ spec:
             - name: {{ $k }}
               {{- if kindIs "string" $v }}
               value: |
-                {{ $v | quote }}
+                {{- if eq $k "COMMANDLINE_ARGS" }}
+                  {{ $v }}
+                {{- else }}
+                  {{ $v | quote }}
+                {{- end }}
               {{- else }}
               {{ $v | toYaml | nindent 14 }}
               {{- end }}
