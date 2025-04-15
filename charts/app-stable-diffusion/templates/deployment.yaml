@@ -49,7 +49,7 @@ spec:
           {{- end }}
           command: [ "/bin/sh", "-c" ]
           args:
-            - "pip install -U 'huggingface_hub[cli]'==0.29.1 && huggingface-cli download {{ .Values.model.modelHFName }} --cache-dir {{.Values.DIFFUSERS_CACHE}}"
+            - "huggingface-cli download {{ .Values.model.modelHFName }} --cache-dir {{.Values.DIFFUSERS_CACHE}}"
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
