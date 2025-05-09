@@ -52,6 +52,14 @@ api:
         paths:
           - path: /
             pathType: ImplementationSpecific
+    forwardAuth:
+      enabled: false
+      # name: forwardauth
+      # address: http://forwardauth:8080
+      # trustForwardHeader: true
+      # authRequestHeaders:
+      #   - "Cookie"
+      #   - "Authorization"
     tls: []
 
 priorityClassName: ""
