@@ -36,31 +36,7 @@ api:
   # Service
   service:
     port: 7860
-  # Ingress
-  ingress:
-    enabled: false
-    clusterName: ""
-    className: ""
-    annotations: { }
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-      # nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    # nginx.ingress.kubernetes.io/proxy-body-size: 15m
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    hosts:
-      - host: sd-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    forwardAuth:
-      enabled: false
-      # name: forwardauth
-      # address: http://forwardauth:8080
-      # trustForwardHeader: true
-      # authRequestHeaders:
-      #   - "Cookie"
-      #   - "Authorization"
-    tls: []
+  
 
 priorityClassName: ""
 
@@ -87,3 +63,29 @@ HFCacheVolume:
   accessMode: ReadWriteOnce
 
 DIFFUSERS_CACHE: "/mnt/models/Diffusers/"
+
+# Ingress
+ingress:
+  enabled: false
+  clusterName: ""
+  className: ""
+  annotations: { }
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: HTTP
+  # nginx.ingress.kubernetes.io/proxy-body-size: 15m
+  # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: sd-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  forwardAuth:
+    enabled: false
+    # name: forwardauth
+    # address: http://forwardauth:8080
+    # trustForwardHeader: true
+    # authRequestHeaders:
+    #   - "Cookie"
+    #   - "Authorization"
+  tls: []
