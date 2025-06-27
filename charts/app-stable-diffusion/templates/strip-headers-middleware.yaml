@@ -3,10 +3,10 @@
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  {{- if .Values.ingress.forwardAuth.name }}
-  name: {{ .Values.ingress.forwardAuth.name }}
+  {{- if .Values.ingress.stripHeaders.name }}
+  name: {{ .Values.ingress.stripHeaders.name }}
   {{- else }}
-  name: {{ include "app.fullname" . }}-auth
+  name: {{ include "app.fullname" . }}-headers
   {{- end }}
   namespace: {{ .Release.Namespace }}
   labels:
