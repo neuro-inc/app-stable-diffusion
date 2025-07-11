@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "app.fullname" . }}-cache
+  name: {{ include "app.hfcachename" . }}
   labels:
     {{- include "app.labels" $ | nindent 4 }}
 spec:

@@ -97,7 +97,7 @@ spec:
       {{- if .Values.HFCacheVolume.enabled }}
         - name: huggingface-cache
           persistentVolumeClaim:
-            claimName: {{ include "app.fullname" . }}-cache
+            claimName: {{ include "app.hfcachename" . }}
       {{- end }}
       {{- with .Values.api.nodeSelector }}
       nodeSelector:
