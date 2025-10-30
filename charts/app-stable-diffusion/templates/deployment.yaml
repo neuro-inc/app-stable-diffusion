@@ -49,7 +49,7 @@ spec:
           {{- end }}
           command: [ "/bin/sh", "-c" ]
           args:
-            - "huggingface-cli download {{ .Values.model.modelHFName }} --cache-dir {{.Values.DIFFUSERS_CACHE}}"
+            - "hf download {{ .Values.model.modelHFName }} --cache-dir {{.Values.DIFFUSERS_CACHE}}"
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
