@@ -1,30 +1,35 @@
-- app_type: text-embeddings-inference
-  name: text-embeddings-inference
-  title: Text Embeddings Inference
+- app_type: stable-diffusion
+  name: stable-diffusion
+  title: Stable Diffusion
   install_type: workflow
-  helm_path: charts/app-text-embeddings-inference
-  git_url: https://github.com/neuro-inc/app-text-embeddings-inference
-  app_package_name: apolo_apps_text_embeddings_inference
+  helm_path: charts/app-stable-diffusion
+  git_url: https://github.com/neuro-inc/app-stable-diffusion
+  app_package_name: apolo_apps_stable_diffusion
   inputs:
-    schema_path: .apolo/src/apolo_apps_text_embeddings_inference/schemas/TextEmbeddingsInferenceInputs.json
-    types_name: TextEmbeddingsInferenceAppInputs
-    processor: TextEmbeddingsInferenceInputsProcessor
-    image: ghcr.io/neuro-inc/mlops-app-text-embeddings-inference
+    schema_path: .apolo/src/apolo_apps_stable_diffusion/schemas/StableDiffusionInputs.json
+    types_name: StableDiffusionInputs
+    processor: StableDiffusionInputsProcessor
+    image: ghcr.io/neuro-inc/mlops-app-stable-diffusion
   outputs:
-    schema_path: .apolo/src/apolo_apps_text_embeddings_inference/schemas/TextEmbeddingsInferenceOutputs.json
-    types_name: TextEmbeddingsInferenceAppOutputs
-    processor: TextEmbeddingsInferenceOutputsProcessor
-    image: ghcr.io/neuro-inc/mlops-app-text-embeddings-inference
-  short_description: A blazing fast inference solution for text embeddings models.
+    schema_path: .apolo/src/apolo_apps_stable_diffusion/schemas/StableDiffusionOutputs.json
+    types_name: StableDiffusionOutputs
+    processor: StableDiffusionOutputsProcessor
+    image: ghcr.io/neuro-inc/mlops-app-stable-diffusion
+  short_description: A web interface for Stable Diffusion, implemented using Gradio library.
   description: |
-    Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models
-  pub_date: "2025-04-10T00:00:00+00:00"
-  logo: https://storage.googleapis.com/development-421920-assets/app-logos/hugging-face.svg
-  tags: ["Embeddings", "Text", "Inference"]
+    Stable Diffusion is a latent text-to-image diffusion model. Thanks to a generous compute donation from Stability AI and support from LAION, we were able to train a Latent Diffusion Model on 512x512 images from a subset of the LAION-5B database. Similar to Google's Imagen, this model uses a frozen CLIP ViT-L/14 text encoder to condition the model on text prompts. With its 860M UNet and 123M text encoder, the model is relatively lightweight and runs on a GPU with at least 10GB VRAM. See this section below and the model card.
+  pub_date: "2025-01-01T00:00:00+00:00"
+  logo: https://storage.googleapis.com/development-421920-assets/app-logos/stable-diffusion.svg
+  tags: ["Stable Diffusion", "AI", "Image generation", "Hugging Face"]
   urls:
-    - name: Text embeddings inference GitHub
+    - name: Stable Diffusion Official
       type: documentation
-      url: https://github.com/huggingface/text-embeddings-inference
+      url: https://stabledifffusion.com/
+    - name: Stable Diffusion Github
+      type: documentation
+      url: https://github.com/CompVis/stable-diffusion
   assets:
     - type: image
-      url: https://storage.googleapis.com/development-421920-assets/app-logos/hugging-face-banner.svg
+      url: https://cdn.jsdelivr.net/gh/boringcdn/sd/sd-banner.jpeg
+    - type: video
+      url: https://www.youtube.com/watch?v=DHaL56P6f5M
