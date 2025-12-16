@@ -5,13 +5,12 @@ from apolo_app_types_fixtures.constants import (
     CPU_POOL,
     DEFAULT_NAMESPACE,
 )
+from apolo_apps_stable_diffusion.inputs_processor import StableDiffusionInputsProcessor
+
 from apolo_app_types import HuggingFaceModel, HuggingFaceToken, StableDiffusionInputs
 from apolo_app_types.helm.apps.common import _get_match_expressions
 from apolo_app_types.protocols.common import ApoloSecret, IngressHttp, Preset
 from apolo_app_types.protocols.stable_diffusion import StableDiffusionParams
-from apolo_apps_stable_diffusion.inputs_processor import StableDiffusionInputsProcessor
-
-
 
 
 @pytest.mark.asyncio
@@ -139,4 +138,3 @@ async def test_values_sd_generation_with_gpu(setup_clients, mock_get_preset_gpu)
         "requiredDuringSchedulingIgnoredDuringExecution"
     ]["nodeSelectorTerms"][0]["matchExpressions"]
     assert match_expressions == _get_match_expressions(["gpu_pool"])
-

@@ -1,17 +1,18 @@
 import pytest
-
 from apolo_apps_stable_diffusion.outputs_processor import get_stable_diffusion_outputs
 
 
 @pytest.mark.asyncio
 async def test_sd(setup_clients, mock_kubernetes_client, app_instance_id):
-    res = (await get_stable_diffusion_outputs(
-        helm_values={
-            "model": {"modelHFName": "SD-Model"},
-            "env": {"VLLM_API_KEY": "dummy-api-key"},
-        },
-        app_instance_id=app_instance_id,
-    )).model_dump()
+    res = (
+        await get_stable_diffusion_outputs(
+            helm_values={
+                "model": {"modelHFName": "SD-Model"},
+                "env": {"VLLM_API_KEY": "dummy-api-key"},
+            },
+            app_instance_id=app_instance_id,
+        )
+    ).model_dump()
 
     assert res
     assert res["api_url"]["external_url"]["host"] == "example.com"
@@ -28,14 +29,16 @@ async def test_sd(setup_clients, mock_kubernetes_client, app_instance_id):
 
 @pytest.mark.asyncio
 async def test_sd_without_files(setup_clients, mock_kubernetes_client, app_instance_id):
-    res = (await get_stable_diffusion_outputs(
-        helm_values={
-            "model": {
-                "modelHFName": "SD-Model",
-            }
-        },
-        app_instance_id=app_instance_id,
-    )).model_dump()
+    res = (
+        await get_stable_diffusion_outputs(
+            helm_values={
+                "model": {
+                    "modelHFName": "SD-Model",
+                }
+            },
+            app_instance_id=app_instance_id,
+        )
+    ).model_dump()
 
     assert res
     assert res["api_url"]["external_url"]["host"] == "example.com"
@@ -58,4 +61,3 @@ async def test_sd_without_model(setup_clients, mock_kubernetes_client, app_insta
         )
 
     assert str(exc_info.value) == "'model'"
-

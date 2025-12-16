@@ -2,8 +2,8 @@ import logging
 import typing as t
 
 from apolo_app_types import HuggingFaceModel
-from apolo_app_types.outputs.base import BaseAppOutputsProcessor
 from apolo_app_types.clients.kube import get_service_host_port
+from apolo_app_types.outputs.base import BaseAppOutputsProcessor
 from apolo_app_types.outputs.common import INSTANCE_LABEL
 from apolo_app_types.outputs.utils.ingress import get_ingress_host_port
 from apolo_app_types.protocols.common.networking import HttpApi, RestAPI, ServiceAPI
@@ -49,7 +49,7 @@ async def get_stable_diffusion_outputs(
         )
 
     model = HuggingFaceModel(model_hf_name=helm_values["model"]["modelHFName"])
-    stable_diffusion_output = StableDiffusionOutputs(
+    return StableDiffusionOutputs(
         api_url=ServiceAPI[HttpApi](
             internal_url=internal_api,
             external_url=external_api,
@@ -59,7 +59,6 @@ async def get_stable_diffusion_outputs(
         hf_model=model,
     )
 
-    return stable_diffusion_output
 
 class StableDiffusionOutputProcessor(BaseAppOutputsProcessor[StableDiffusionOutputs]):
     async def _generate_outputs(
@@ -68,5 +67,3 @@ class StableDiffusionOutputProcessor(BaseAppOutputsProcessor[StableDiffusionOutp
         app_instance_id: str,
     ) -> StableDiffusionOutputs:
         return await get_stable_diffusion_outputs(helm_values, app_instance_id)
-
-

@@ -14,9 +14,7 @@ from apolo_app_types.protocols.common.secrets_ import serialize_optional_secret
 from apolo_apps_stable_diffusion.types import StableDiffusionInputs
 
 
-class StableDiffusionInputsProcessor(
-    BaseChartValueProcessor[StableDiffusionInputs]
-):
+class StableDiffusionInputsProcessor(BaseChartValueProcessor[StableDiffusionInputs]):
     def _get_env_vars(
         self, input_: StableDiffusionInputs, preset: Preset, app_secrets_name: str
     ) -> dict[str, t.Any]:
@@ -96,4 +94,3 @@ class StableDiffusionInputsProcessor(
                 },
             ]
         )
-

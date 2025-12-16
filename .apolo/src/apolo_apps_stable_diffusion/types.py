@@ -9,8 +9,8 @@ from apolo_app_types.protocols.common import (
     SchemaExtraMetadata,
     SchemaMetaType,
 )
-from apolo_app_types.protocols.stable_diffusion import StableDiffusionOutputs
 from apolo_app_types.protocols.common.hugging_face import HF_SCHEMA_EXTRA
+from apolo_app_types.protocols.stable_diffusion import StableDiffusionOutputs
 
 
 class StableDiffusionParams(AbstractAppFieldType):
