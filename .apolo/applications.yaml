@@ -1,0 +1,30 @@
+- app_type: text-embeddings-inference
+  name: text-embeddings-inference
+  title: Text Embeddings Inference
+  install_type: workflow
+  helm_path: charts/app-text-embeddings-inference
+  git_url: https://github.com/neuro-inc/app-text-embeddings-inference
+  app_package_name: apolo_apps_text_embeddings_inference
+  inputs:
+    schema_path: .apolo/src/apolo_apps_text_embeddings_inference/schemas/TextEmbeddingsInferenceInputs.json
+    types_name: TextEmbeddingsInferenceAppInputs
+    processor: TextEmbeddingsInferenceInputsProcessor
+    image: ghcr.io/neuro-inc/mlops-app-text-embeddings-inference
+  outputs:
+    schema_path: .apolo/src/apolo_apps_text_embeddings_inference/schemas/TextEmbeddingsInferenceOutputs.json
+    types_name: TextEmbeddingsInferenceAppOutputs
+    processor: TextEmbeddingsInferenceOutputsProcessor
+    image: ghcr.io/neuro-inc/mlops-app-text-embeddings-inference
+  short_description: A blazing fast inference solution for text embeddings models.
+  description: |
+    Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models
+  pub_date: "2025-04-10T00:00:00+00:00"
+  logo: https://storage.googleapis.com/development-421920-assets/app-logos/hugging-face.svg
+  tags: ["Embeddings", "Text", "Inference"]
+  urls:
+    - name: Text embeddings inference GitHub
+      type: documentation
+      url: https://github.com/huggingface/text-embeddings-inference
+  assets:
+    - type: image
+      url: https://storage.googleapis.com/development-421920-assets/app-logos/hugging-face-banner.svg
