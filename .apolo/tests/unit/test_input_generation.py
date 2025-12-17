@@ -6,11 +6,14 @@ from apolo_app_types_fixtures.constants import (
     DEFAULT_NAMESPACE,
 )
 from apolo_apps_stable_diffusion.inputs_processor import StableDiffusionInputsProcessor
+from apolo_apps_stable_diffusion.types import (
+    StableDiffusionInputs,
+    StableDiffusionParams,
+)
 
-from apolo_app_types import HuggingFaceModel, HuggingFaceToken, StableDiffusionInputs
+from apolo_app_types import HuggingFaceModel, HuggingFaceToken
 from apolo_app_types.helm.apps.common import _get_match_expressions
 from apolo_app_types.protocols.common import ApoloSecret, IngressHttp, Preset
-from apolo_app_types.protocols.stable_diffusion import StableDiffusionParams
 
 
 @pytest.mark.asyncio
