@@ -21,7 +21,10 @@ api:
 
   podAnnotations: {}
 
-  resources: {}
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -55,7 +58,10 @@ modelDownload:
     repository: ghcr.io/neuro-inc/hf-downloader
     tag: v25.10.0
     pullPolicy: IfNotPresent
-  resources: {}
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
 
 HFCacheVolume:
   enabled: true

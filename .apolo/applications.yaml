@@ -18,6 +18,9 @@
   short_description: A web interface for Stable Diffusion, implemented using Gradio library.
   description: |
     Stable Diffusion is a latent text-to-image diffusion model. Thanks to a generous compute donation from Stability AI and support from LAION, we were able to train a Latent Diffusion Model on 512x512 images from a subset of the LAION-5B database. Similar to Google's Imagen, this model uses a frozen CLIP ViT-L/14 text encoder to condition the model on text prompts. With its 860M UNet and 123M text encoder, the model is relatively lightweight and runs on a GPU with at least 10GB VRAM. See this section below and the model card.
+    Resource sizing options:
+    - Lean (dev/test): 1 vCPU, 3 GiB RAM
+    - Balanced (prod): 2 vCPU, 6 GiB RAM
   pub_date: "2025-01-01T00:00:00+00:00"
   logo: https://storage.googleapis.com/development-421920-assets/app-logos/stable-diffusion.svg
   tags: ["Stable Diffusion", "AI", "Image generation", "Hugging Face"]
