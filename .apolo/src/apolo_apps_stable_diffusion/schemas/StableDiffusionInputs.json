@@ -332,7 +332,9 @@
       "$ref": "#/$defs/IngressHttp"
     },
     "preset": {
-      "$ref": "#/$defs/Preset"
+      "$ref": "#/$defs/Preset",
+      "x-description": "Select the resource preset used for the Stable Diffusion Model instance. Minimal resources: 2 CPU cores, 8 GiB memory, 1 GPU with 8 GiB memory.",
+      "x-title": "Stable Diffusion Model preset"
     },
     "stable_diffusion": {
       "$ref": "#/$defs/StableDiffusionParams"

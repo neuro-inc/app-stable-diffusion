@@ -44,7 +44,15 @@ class StableDiffusionParams(AbstractAppFieldType):
 
 class StableDiffusionInputs(AppInputs):
     ingress_http: IngressHttp
-    preset: Preset
+    preset: Preset = Field(
+        ...,
+        json_schema_extra=SchemaExtraMetadata(
+            title="Stable Diffusion Model preset",
+            description="Select the resource preset used for the "
+            "Stable Diffusion Model instance. "
+            "Minimal resources: 2 CPU cores, 8 GiB memory, 1 GPU with 8 GiB memory.",
+        ).as_json_schema_extra(),
+    )
     stable_diffusion: StableDiffusionParams
 
 
